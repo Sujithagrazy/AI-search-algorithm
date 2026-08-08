@@ -1,0 +1,54 @@
+import heapq
+
+# Road network
+graph = {
+    "A": [("B", 4), ("C", 2)],
+    "B": [("A", 4), ("C", 1), ("D", 5)],
+    "C": [("A", 2), ("B", 1), ("D", 8)],
+    "D": [("B", 5), ("C", 8), ("E", 2)],
+    "E": [("D", 2)]
+}
+
+def uniform_cost_search(start, goal):
+
+    # Priority queue: (cost, current_node, path)
+    queue = [(0, start, [start])]
+
+    visited = set()
+
+    while queue:
+
+        cost, current, path = heapq.heappop(queue)
+
+        print("Visiting:", current)
+        print("Current Cost:", cost)
+        print("Path:", path)
+        print()
+
+        if current == goal:
+            return path, cost
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        for neighbor, weight in graph[current]:
+
+            if neighbor not in visited:
+                new_cost = cost + weight
+                new_path = path + [neighbor]
+
+                heapq.heappush(
+                    queue,
+                    (new_cost, neighbor, new_path)
+                )
+
+    return None, float("inf")
+
+
+# Find cheapest route from A to E
+path, cost = uniform_cost_search("A", "E")
+
+print("Final Path:", path)
+print("Total Cost:", cost)
