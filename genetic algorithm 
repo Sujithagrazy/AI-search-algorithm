@@ -1,0 +1,72 @@
+import random
+
+# Possible time slots
+time_slots = ["9AM", "10AM", "11AM", "1PM", "2PM"]
+
+# Subjects
+subjects = ["Python", "Maths", "AI", "DBMS", "OS"]
+
+# Fitness function
+# Fitness = number of subjects placed in different time slots
+def fitness(timetable):
+    conflicts = 0
+
+    for i in range(len(timetable)):
+        for j in range(i + 1, len(timetable)):
+            if timetable[i] == timetable[j]:
+                conflicts += 1
+
+    return len(timetable) - conflicts
+
+
+# Create a random timetable
+def create_timetable():
+    timetable = []
+
+    for i in range(len(subjects)):
+        timetable.append(random.choice(time_slots))
+
+    return timetable
+
+
+# Create initial population
+population = []
+
+for i in range(6):
+    population.append(create_timetable())
+
+
+print("Initial Population:")
+for timetable in population:
+    print(timetable, "Fitness:", fitness(timetable))
+
+
+# Select the best two timetables
+population.sort(key=fitness, reverse=True)
+
+parent1 = population[0]
+parent2 = population[1]
+
+print("\nSelected Parent 1:", parent1)
+print("Selected Parent 2:", parent2)
+
+
+# Crossover
+child = parent1[:2] + parent2[2:]
+
+print("\nAfter Crossover:")
+print("Child:", child)
+
+
+# Mutation
+mutation_position = random.randint(0, len(subjects) - 1)
+child[mutation_position] = random.choice(time_slots)
+
+print("\nAfter Mutation:")
+print("Child:", child)
+
+print("\nFinal Fitness:", fitness(child))
+
+print("\nSubjects:")
+for i in range(len(subjects)):
+    print(subjects[i], "->", child[i])
